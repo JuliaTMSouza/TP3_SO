@@ -161,10 +161,13 @@ void pager_fault(pid_t pid, void *addr)
         }
     }
 
+    int page;
+
 
     for (int y = 0; y < pager.nprocs; y++) {
         if(proc->pages[y].block == addr){
 
+            page = y;
 
             break;
         }else if(y == pager.nprocs){
