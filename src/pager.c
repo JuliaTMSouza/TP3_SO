@@ -1,6 +1,7 @@
 #include "pager.h"
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h> 
 
 struct frame_data
 {
@@ -107,8 +108,10 @@ void *pager_extend(pid_t pid)
     page->on_disk = 1;  // Marca como estando no disco
     page->frame = -1;   // Ainda não alocou um frame de memória física
 
+    void *virtual_address = (void *)((proc->npages) * sysconf(_SC_PAGESIZE));
+
     // Retorna o endereço virtual da nova página (representado aqui como NULL)
-    return NULL;
+    return virtual_address;
 }
 
 void pager_fault(pid_t pid, void *addr)
