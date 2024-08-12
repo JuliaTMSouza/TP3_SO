@@ -1,1 +1,2 @@
-(external) segmentation fault
+(internal) segmentation fault.
+address 0x60001388 not allocated.

@@ -1,44 +1,11 @@
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-(external) segmentation fault
-src/uvm.c:174: : Success
-src/uvm.c:174: : Success
+(internal) segmentation fault.
+address 0x600d800a not allocated.
+(internal) segmentation fault.
+address 0x6002100a not allocated.
+(internal) segmentation fault.
+address 0x6002900a not allocated.
+(internal) segmentation fault.
+address 0x6002d00a not allocated.
 src/uvm.c:104: : Connection reset by peer
 src/uvm.c:174: : Success
 src/uvm.c:174: : Success
@@ -48,19 +15,55 @@ src/uvm.c:174: : Success
 src/uvm.c:174: : Success
 src/uvm.c:174: : Success
 src/uvm.c:174: : Success
-src/uvm.c:174: : Connection reset by peer
-src/uvm.c:174: : Success
-src/uvm.c:174: : Connection reset by peer
-src/uvm.c:174: : Success
-src/uvm.c:174: : Connection reset by peer
-src/uvm.c:174: : Connection reset by peer
-src/uvm.c:174: : Connection reset by peer
-src/uvm.c:174: : Connection reset by peer
-src/uvm.c:174: : Connection reset by peer
 src/uvm.c:174: : Success
 src/uvm.c:174: : Connection reset by peer
 src/uvm.c:174: : Success
 src/uvm.c:174: : Success
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
 src/uvm.c:174: : Connection reset by peer
 src/uvm.c:174: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:174: : Success
+src/uvm.c:104: : Connection reset by peer
 src/uvm.c:174: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:174: : Success
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:104: : Connection reset by peer
+src/uvm.c:174: : Success
+src/uvm.c:370: : Connection refused
+src/uvm.c:370: : Connection refused
+src/uvm.c:370: : Connection refused
+src/uvm.c:370: : Connection refused
+src/uvm.c:370: : Connection refused
+src/uvm.c:370: : Connection refused
+src/uvm.c:370: : Connection refused
+src/uvm.c:370: : Connection refused
+src/uvm.c:370: : Connection refused

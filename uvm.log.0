@@ -2,20 +2,11 @@ uvm_create starting
   connecting unix socket [mmu.sock]
 src/uvm.c:362: strerror: No such file or directory
 mmu.sock connection attempt 0/3 failed
-  sending CREATE_REQ [36847]
-  waiting CREATE_REP
-src/uvm.c:104: strerror: Connection reset by peer
-up SEGV handler
-  starting uvm_thread()
-  setting up uvm_exit() on_exit()
-uvm_create succeeded
-uvm_thread masking SEGV
-uvm_thread waiting message
-src/uvm.c:174: strerror: Connection reset by peer
-rocessing EXTEND_REP
-uvm_thread waiting message
-src/uvm.c:174: strerror: Connection reset by peer
-rocessing EXTEND_REP
+src/uvm.c:362: strerror: Connection refused
+mmu.sosrc/uvm.c:104: strerror: Connectisrc/uvm.c:362: strerror: Connection refused
+mmu.sock connection attempt 2/3 failed
+src/uvm.c:370: strerror: Connection refused
+ing SEGV
 uvm_thread waiting message
 processing EXTEND_REP
 uvm_thread waiting message
@@ -23,8 +14,9 @@ processing EXTEND_REP
 uvm_thread waiting message
 processing EXTEND_REP
 uvm_thread waiting message
-src/uvm.c:174: strerror: Connection reset by peer
-rocessing EXTEND_REP
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
 uvm_thread waiting message
 processing EXTEND_REP
 uvm_thread waiting message
@@ -43,11 +35,6 @@ processing EXTEND_REP
 uvm_thread waiting message
 processing EXTEND_REP
 uvm_thread waiting message
-src/uvm.c:174: strerror: Connection reset by peersrc/uvm.c:174: strerror: Connection reset by peer
-rc/uvm.c:174: strerror: Connection reset by peersrc/uvm.c:174: strerror: Connection reset by peer
-rc/uvm.c:174: strerror: Connection reset by peer
-rocessing EXTEND_REP
-uvm_thread waiting message
 processing EXTEND_REP
 uvm_thread waiting message
 processing EXTEND_REP
@@ -63,7 +50,24 @@ rocessing EXTEND_REP
 uvm_thread waiting message
 processing EXTEND_REP
 uvm_thread waiting message
-segv addr 0x7f54e800251a code 1
-external segfault. aborting.
-uvm_exit running
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
 src/uvm.c:174: strerror: Connection reset by peer
+rocessing EXTEND_REP
+uvm_thread waiting message
+src/uvm.c:174: strerror: Connection reset by peer
+rocessing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+segv addr 0x6000500a code 1
+uvm_segv_action waiting service at condition variable
+vm_thread exiting

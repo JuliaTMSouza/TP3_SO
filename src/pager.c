@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h> 
 #include <stdio.h>
+#include <stdint.h>
 
 #include <sys/types.h>
 #include <sys/mman.h>
@@ -115,7 +116,7 @@ void *pager_extend(pid_t pid)
     page->on_disk = 1;  // Marca como estando no disco
     page->frame = -1;   // Ainda não alocou um frame de memória física
 
-    void *virtual_address = &proc->pages;
+    void *virtual_address = (void *)(UVM_BASEADDR + (page->block*sysconf(_SC_PAGESIZE)));
 
     // Retorna o endereço virtual da nova página (representado aqui como NULL)
     return virtual_address;
