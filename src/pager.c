@@ -24,6 +24,7 @@ struct page_data
     int block;
     int on_disk;
     int frame;
+    intptr_t bl_addr;
 };
 
 struct proc
@@ -117,6 +118,7 @@ void *pager_extend(pid_t pid)
     page->frame = -1;   // Ainda não alocou um frame de memória física
 
     void *virtual_address = (void *)(UVM_BASEADDR + (page->block*sysconf(_SC_PAGESIZE)));
+    page->bl_addr = virtual_address;
 
     // Retorna o endereço virtual da nova página (representado aqui como NULL)
     return virtual_address;
@@ -166,7 +168,7 @@ void pager_fault(pid_t pid, void *addr)
 
 
     for (int y = 0; y < pager.nprocs; y++) {
-        if(proc->pages[y].block == addr){
+        if(proc->pages[y].bl_addr == addr){
 
             page = y;
 
@@ -179,7 +181,7 @@ void pager_fault(pid_t pid, void *addr)
             }
 
             proc->pages[y + 1].frame = frame;
-            //proc->pages[y + 1].block = addr;
+            //proc->pages[y + 1].bl_addr = addr;
             
             mmu_zero_fill(frame);
             mmu_resident(pid, addr, frame, PROT_READ);
@@ -208,7 +210,7 @@ int pager_syslog(pid_t pid, void *addr, size_t len)
     int *buf = addr;
 
     for (int y = 0; y < pager.nprocs; y++) {
-        if(((proc->pages[y].block <= *buf) && *buf <= (proc->pages[y].block + 0xFFF)) && ((proc->pages[y].block <= (*buf + len)) && (*buf + len) <= proc->pages[y].block + 0xFFF)){
+        if(((proc->pages[y].bl_addr <= *buf) && *buf <= (proc->pages[y].bl_addr + 0xFFF)) && ((proc->pages[y].bl_addr <= (*buf + len)) && (*buf + len) <= proc->pages[y].bl_addr + 0xFFF)){
             for(int i = 0; i < len; i++) {        // len é o número de bytes a imprimir
                 printf("%02x", (unsigned)buf[i]); // buf contém os dados a serem impressos
             }
