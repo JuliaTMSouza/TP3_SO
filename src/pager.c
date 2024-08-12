@@ -161,12 +161,10 @@ void pager_fault(pid_t pid, void *addr)
         }
     }
 
-    int page;
 
     for (int y = 0; y < pager.nprocs; y++) {
-        if(proc->pages[y].block == (int)addr){
+        if(proc->pages[y].block == addr){
 
-            page = y;
 
             break;
         }else if(y == pager.nprocs){
@@ -176,7 +174,8 @@ void pager_fault(pid_t pid, void *addr)
                 frame = findAndReplase();
             }
 
-            proc->pages[page].frame = frame;
+            proc->pages[y + 1].frame = frame;
+            //proc->pages[y + 1].block = addr;
             
             mmu_zero_fill(frame);
             mmu_resident(pid, addr, frame, PROT_READ);
