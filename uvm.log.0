@@ -1,73 +1,18 @@
 uvm_create starting
   connecting unix socket [mmu.sock]
-src/uvm.c:362: strerror: No such file or directory
-mmu.sock connection attempt 0/3 failed
-src/uvm.c:362: strerror: Connection refused
-mmu.sosrc/uvm.c:104: strerror: Connectisrc/uvm.c:362: strerror: Connection refused
-mmu.sock connection attempt 2/3 failed
-src/uvm.c:370: strerror: Connection refused
-ing SEGV
+  sending CREATE_REQ [54664]
+  waiting CREATE_REP
+  mapping pmem_fn [mmu.pmem.img.tjq7Bp]
+  setting up SEGV handler
+  starting uvm_thread()
+  setting up uvm_exit() on_exit()
+uvm_create succeeded
+uvm_thread masking SEGV
 uvm_thread waiting message
 processing EXTEND_REP
 uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-src/uvm.c:174: strerror: Connection reset by peer
-rocessing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-src/uvm.c:174: strerror: Connection reset by peer
-rocessing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-src/uvm.c:174: strerror: Connection reset by peer
-rocessing EXTEND_REP
-uvm_thread waiting message
-src/uvm.c:174: strerror: Connection reset by peer
-rocessing EXTEND_REP
-uvm_thread waiting message
-processing EXTEND_REP
-uvm_thread waiting message
-segv addr 0x6000500a code 1
+segv addr 0x60000000 code 1
 uvm_segv_action waiting service at condition variable
-vm_thread exiting
+processing CHPROT_REP
+mprotect 0x60000000 prot 3
+src/uvm.c:340: strerror: Cannot allocate memory

@@ -106,7 +106,7 @@ void *pager_extend(pid_t pid)
     if (pager.free_blocks == 0) {
         return NULL;  // Sem blocos de disco disponíveis
     }
-
+    
     if (proc->npages == proc->maxpages) {
         proc->maxpages *= 2;
         proc->pages = (struct page_data *)realloc(proc->pages, sizeof(struct page_data) * proc->maxpages);
@@ -118,8 +118,7 @@ void *pager_extend(pid_t pid)
     page->frame = -1;   // Ainda não alocou um frame de memória física
 
     void *virtual_address = (void *)(UVM_BASEADDR + (page->block*sysconf(_SC_PAGESIZE)));
-    page->bl_addr = virtual_address;
-
+    page->bl_addr = (intptr_t)virtual_address;
     // Retorna o endereço virtual da nova página (representado aqui como NULL)
     return virtual_address;
 }

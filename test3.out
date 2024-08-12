@@ -1,2 +1,2 @@
-src/uvm.c:174: : Success
+src/uvm.c:340: : Cannot allocate memory
 this should print a zero:
