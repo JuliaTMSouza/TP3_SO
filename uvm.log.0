@@ -1,0 +1,72 @@
+uvm_create starting
+  connecting unix socket [mmu.sock]
+src/uvm.c:362: strerror: No such file or directory
+mmu.sock connection attempt 0/3 failed
+  sending CREATE_REQ [32137]
+  waiting CREATE_REP
+  mapping pmem_fn [mmu.pmem.img.8HPynA]
+  setting up SEGV handler
+  starting uvm_thread()
+  setting up uvm_exit() on_exit()
+uvm_create succeeded
+uvm_thread masking SEGV
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+src/uvm.c:174: strerror: Connection reset by peer
+rocessing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+src/uvm.c:174: strerror: Connection reset by peer
+rocessing EXTEND_REP
+uvm_thread waiting message
+src/uvm.c:174: strerror: Connection reset by peersrc/uvm.c:174: strerror: Connection reset by peer
+rocessing EXTEND_REP
+uvm_thread waiting message
+src/uvm.c:174: strerror: Connection reset by peer
+rc/uvm.c:174: strerror: Connection reset by peer
+rocessing EXTEND_REP
+uvm_thread waiting message
+src/uvm.c:174: strerror: Connection reset by peer
+rocessing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+src/uvm.c:174: strerror: Connection reset by peer
+rocessing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+processing EXTEND_REP
+uvm_thread waiting message
+segv addr 0x100a code 1
+external segfault. aborting.
+uvm_exit running
+uvm_thread exiting
