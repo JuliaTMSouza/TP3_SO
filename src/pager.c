@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> 
+#include <stdio.h>
 
 #include <sys/types.h>
 #include <sys/mman.h>
@@ -14,7 +15,7 @@ struct frame_data
     int page;
     int prot;
     int dirty;
-    int secondChance
+    int secondChance;
 };
 
 struct page_data
@@ -120,84 +121,6 @@ void *pager_extend(pid_t pid)
     return virtual_address;
 }
 
-void pager_fault(pid_t pid, void *addr)
-{
-    struct proc *proc = NULL;
-    for (int i = 0; i < pager.nprocs; i++) {
-        if (pager.procs[i].pid == pid) {
-            proc = &pager.procs[i];
-            break;
-        }
-    }
-
-    int page;
-
-    for (int y = 0; y < pager.nprocs; y++) {
-        if(proc->pages[y].block == addr){
-
-            page = y;
-
-            break;
-        }else if(y == pager.nprocs){
-            int frame = findAndUpdate();
-
-            if(frame == -1){
-                int frame = findAndReplase();
-            }
-
-            proc->pages[page].frame = frame;
-            
-            mmu_zero_fill(frame);
-            mmu_resident(pid, addr, frame, PROT_READ);
-
-            return 0;
-        }
-    }
-
-    if(proc->pages[page].frame != 0){
-        mmu_chprot(pid, addr, PROT_READ | PROT_WRITE);
-
-        pager.frames[proc->pages[page].frame].secondChance = 0;
-    }
-
-
-}
-
-int pager_syslog(pid_t pid, void *addr, size_t len)
-{
-    struct proc *proc = NULL;
-    for (int i = 0; i < pager.nprocs; i++) {
-        if (pager.procs[i].pid == pid) {
-            proc = &pager.procs[i];
-            break;
-        }
-    }
-
-    int *buf = addr;
-
-    for (int y = 0; y < pager.nprocs; y++) {
-        if(proc->pages[y].block <= buf <= (proc->pages[y].block + 0xFFF) && proc->pages[y].block <= buf + len <= proc->pages[y].block + 0xFFF){
-            for(int i = 0; i < len; i++) {        // len é o número de bytes a imprimir
-                printf("%02x", (unsigned)buf[i]); // buf contém os dados a serem impressos
-            }
-
-            return 0;
-        }
-    }
-
-    return -1;
-}
-
-void pager_destroy(pid_t pid)
-{
-    for(int i = 0; i < pager.nprocs; i++){
-        if (pager.procs[i].pid == pid) {
-            free(pager.procs[i].pages);
-            break;
-        }
-    }
-}
-
 int findAndUpdate(){
     for(int i = 0; i < pager.nframes; i++) 
     { 
@@ -226,4 +149,80 @@ int findAndReplase(){
     } 
      
     return -1; 
+}
+
+void pager_fault(pid_t pid, void *addr)
+{
+    struct proc *proc = NULL;
+    for (int i = 0; i < pager.nprocs; i++) {
+        if (pager.procs[i].pid == pid) {
+            proc = &pager.procs[i];
+            break;
+        }
+    }
+
+    int page;
+
+    for (int y = 0; y < pager.nprocs; y++) {
+        if(proc->pages[y].block == (int)addr){
+
+            page = y;
+
+            break;
+        }else if(y == pager.nprocs){
+            int frame = findAndUpdate();
+
+            if(frame == -1){
+                frame = findAndReplase();
+            }
+
+            proc->pages[page].frame = frame;
+            
+            mmu_zero_fill(frame);
+            mmu_resident(pid, addr, frame, PROT_READ);
+        }
+    }
+
+    if(proc->pages[page].frame != 0){
+        mmu_chprot(pid, addr, PROT_READ | PROT_WRITE);
+
+        pager.frames[proc->pages[page].frame].secondChance = 0;
+    }
+
+
+}
+
+int pager_syslog(pid_t pid, void *addr, size_t len)
+{
+    struct proc *proc = NULL;
+    for (int i = 0; i < pager.nprocs; i++) {
+        if (pager.procs[i].pid == pid) {
+            proc = &pager.procs[i];
+            break;
+        }
+    }
+
+    int *buf = addr;
+
+    for (int y = 0; y < pager.nprocs; y++) {
+        if(((proc->pages[y].block <= *buf) && *buf <= (proc->pages[y].block + 0xFFF)) && ((proc->pages[y].block <= (*buf + len)) && (*buf + len) <= proc->pages[y].block + 0xFFF)){
+            for(int i = 0; i < len; i++) {        // len é o número de bytes a imprimir
+                printf("%02x", (unsigned)buf[i]); // buf contém os dados a serem impressos
+            }
+
+            return 0;
+        }
+    }
+
+    return -1;
+}
+
+void pager_destroy(pid_t pid)
+{
+    for(int i = 0; i < pager.nprocs; i++){
+        if (pager.procs[i].pid == pid) {
+            free(pager.procs[i].pages);
+            break;
+        }
+    }
 }
