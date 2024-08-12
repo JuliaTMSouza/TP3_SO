@@ -115,7 +115,7 @@ void *pager_extend(pid_t pid)
     page->on_disk = 1;  // Marca como estando no disco
     page->frame = -1;   // Ainda não alocou um frame de memória física
 
-    void *virtual_address = (void *)((proc->npages) * sysconf(_SC_PAGESIZE));
+    void *virtual_address = &proc->pages;
 
     // Retorna o endereço virtual da nova página (representado aqui como NULL)
     return virtual_address;
