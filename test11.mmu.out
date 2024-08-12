@@ -1,8 +1,8 @@
 pager_create pid 0
-pager_extend pid 0 vaddr 0x1000
-pager_extend pid 0 vaddr 0x2000
 pager_create pid 1
-pager_destroy pid 0
-pager_extend pid 1 vaddr 0x1000
+pager_extend pid 0 vaddr 0x7f3b88001b80
+pager_extend pid 1 vaddr 0x7f3b88001b98
+pager_extend pid 0 vaddr 0x7f3b88001b80
 pager_extend pid 1 vaddr (nil)
+pager_destroy pid 0
 pager_destroy pid 1
