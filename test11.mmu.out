@@ -1,0 +1,72 @@
+pager_create pid 0
+pager_create pid 1
+pager_extend pid 1 vaddr (nil)
+pager_extend pid 0 vaddr (nil)
+pager_extend pid 1 vaddr (nil)
+pager_extend pid 0 vaddr (nil)
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 1 0x60000000
+pager_syslog pid 0 0x60001000
+pager_syslog pid 1 0x60001000
+pager_syslog pid 0 0x60000000
+pager_syslog pid 0 0x60001000
+pager_destroy pid 0
+pager_destroy pid 1

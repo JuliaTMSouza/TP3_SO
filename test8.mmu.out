@@ -1,0 +1,7 @@
+pager_create pid 0
+pager_extend pid 0 vaddr (nil)
+pager_extend pid 0 vaddr (nil)
+pager_extend pid 0 vaddr (nil)
+pager_extend pid 0 vaddr (nil)
+pager_extend pid 0 vaddr (nil)
+pager_destroy pid 0
