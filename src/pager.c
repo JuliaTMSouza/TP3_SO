@@ -64,6 +64,7 @@ void pager_init(int nframes, int nblocks)
         pager.frames[i].page = -1;
         pager.frames[i].prot = 0;
         pager.frames[i].dirty = 0;
+        pager.frames[i].secondChance = 0;
     }
 
     pager.procs = NULL;
@@ -140,21 +141,14 @@ int findAndReplace()
         // Percorrer os quadros começando do ponto de partida
         for (int i = start; i < pager.nframes; i++)
         {
-            // Se o quadro não tem uma segunda chance, retorná-lo
-            if (pager.frames[i].secondChance == 0)
-            {
-                // Atualizar o próximo ponto de verificação
-                pager.start_frame = (i + 1) % pager.nframes;
-                return i;
-            }
-
-            // Se o quadro tem uma segunda chance, resetar o bit e continuar
-            pager.frames[i].secondChance = 0;
-        }
-
-        // Continuar a procura a partir do início
-        pager.start_frame = 0;
-    }
+            pager.frames[i].dirty = 1;
+            pager.frames[i].secondChance = 1;
+            fprintf(stderr, "Frame limpo.\n");
+            return i; 
+        } 
+    } 
+     
+    return -1; 
 }
 
 int findFreeFrame()
