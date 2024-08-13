@@ -1,1 +1,2 @@
-src/uvm.c:174: : Success
+this should print 10:
+10

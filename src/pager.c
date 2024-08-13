@@ -1,7 +1,7 @@
 #include "pager.h"
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h> 
+#include <unistd.h>
 #include <stdio.h>
 #include <stdint.h>
 
@@ -44,6 +44,7 @@ struct pager
     struct proc *procs;
     int nprocs;
     int max_procs;
+    int start_frame;
 };
 
 struct pager pager;
@@ -54,6 +55,7 @@ void pager_init(int nframes, int nblocks)
     pager.nframes = nframes;
     pager.nblocks = nblocks;
     pager.free_blocks = nblocks;
+    pager.start_frame = 0;
 
     // Inicializando os frames com valores padrão
     for (int i = 0; i < nframes; i++)
@@ -70,7 +72,7 @@ void pager_init(int nframes, int nblocks)
 }
 
 void pager_create(pid_t pid)
-{   
+{
     if (pager.nprocs == pager.max_procs)
     {
         pager.max_procs = pager.max_procs == 0 ? 4 : pager.max_procs * 2;
@@ -95,126 +97,151 @@ void pager_create(pid_t pid)
 void *pager_extend(pid_t pid)
 {
     struct proc *proc = NULL;
-    for (int i = 0; i < pager.nprocs; i++) {
-        if (pager.procs[i].pid == pid) {
+    for (int i = 0; i < pager.nprocs; i++)
+    {
+        if (pager.procs[i].pid == pid)
+        {
             proc = &pager.procs[i];
             break;
         }
     }
-    if (!proc) return NULL;
+    if (!proc)
+        return NULL;
 
-    if (pager.free_blocks == 0) {
-        return NULL;  // Sem blocos de disco disponíveis
+    if (pager.free_blocks == 0)
+    {
+        return NULL; // Sem blocos de disco disponíveis
     }
-    
-    if (proc->npages == proc->maxpages) {
+
+    if (proc->npages == proc->maxpages)
+    {
         proc->maxpages *= 2;
         proc->pages = (struct page_data *)realloc(proc->pages, sizeof(struct page_data) * proc->maxpages);
     }
 
     struct page_data *page = &proc->pages[proc->npages++];
-    page->block = pager.nblocks - pager.free_blocks--;  // Atribui um bloco de disco
-    page->on_disk = 1;  // Marca como estando no disco
-    page->frame = -1;   // Ainda não alocou um frame de memória física
+    page->block = pager.nblocks - pager.free_blocks--; // Atribui um bloco de disco
+    page->on_disk = 1;                                 // Marca como estando no disco
+    page->frame = -1;                                  // Ainda não alocou um frame de memória física
 
-    void *virtual_address = (void *)(UVM_BASEADDR + (page->block*sysconf(_SC_PAGESIZE)));
+    void *virtual_address = (void *)(UVM_BASEADDR + (page->block * sysconf(_SC_PAGESIZE)));
     page->bl_addr = (intptr_t)virtual_address;
     // Retorna o endereço virtual da nova página (representado aqui como NULL)
     return virtual_address;
 }
 
-int findAndUpdate(){
-    for(int i = 0; i < pager.nframes; i++) 
-    { 
-         
-        if(pager.frames[i].dirty == 0) 
+int findAndReplace()
+{
+    // Guardar o ponto de partida
+    int start = pager.start_frame;
+
+    while (1)
+    {
+        // Percorrer os quadros começando do ponto de partida
+        for (int i = start; i < pager.nframes; i++)
         {
-            pager.frames[i].dirty = 1;
-            pager.frames[i].secondChance = 1;
-             
-            return i; 
-        } 
-    } 
-     
-    return -1; 
+            // Se o quadro não tem uma segunda chance, retorná-lo
+            if (pager.frames[i].secondChance == 0)
+            {
+                // Atualizar o próximo ponto de verificação
+                pager.start_frame = (i + 1) % pager.nframes;
+                return i;
+            }
+
+            // Se o quadro tem uma segunda chance, resetar o bit e continuar
+            pager.frames[i].secondChance = 0;
+        }
+
+        // Continuar a procura a partir do início
+        pager.start_frame = 0;
+    }
 }
 
-int findAndReplace(){
-    for(int i = 0; i < pager.nframes; i++) 
-    { 
-         
-        if(pager.frames[i].secondChance == 0) 
+int findFreeFrame()
+{
+    for (int i = 0; i < pager.nframes; i++)
+    {
+        // Verificar se o quadro está livre (nenhum processo está usando o quadro)
+        if (pager.frames[i].pid == -1)
         {
-             
-            return i; 
-        } 
-    } 
-     
-    return -1; 
+            return i; // Retornar o índice do quadro livre
+        }
+    }
+    return -1; // Retornar -1 se nenhum quadro livre for encontrado
 }
 
 void pager_fault(pid_t pid, void *addr)
 {
     struct proc *proc = NULL;
-    
+
     // Encontrar o processo associado ao pid
-    for (int i = 0; i < pager.nprocs; i++) {
-        if (pager.procs[i].pid == pid) {
+    for (int i = 0; i < pager.nprocs; i++)
+    {
+        if (pager.procs[i].pid == pid)
+        {
             proc = &pager.procs[i];
             break;
         }
     }
-    
-    if (!proc) {
+
+    if (!proc)
+    {
         // Processo não encontrado
         fprintf(stderr, "Processo %d não encontrado.\n", pid);
         return;
     }
-    
+
     // Encontrar a página associada ao endereço
     int page_index = -1;
-    for (int i = 0; i < proc->npages; i++) {
-        if ((uintptr_t)proc->pages[i].block == (uintptr_t)addr) {
+    for (int i = 0; i < proc->npages; i++)
+    {
+        if (proc->pages[i].bl_addr == (intptr_t)addr)
+        {
             page_index = i;
             break;
         }
     }
-    
-    if (page_index == -1) {
-        // Página não encontrada, alocar uma nova
-        int frame = findAndUpdate();
-        if (frame == -1) {
-            frame = findAndReplace();
-            if (frame == -1) {
-                // Nenhum frame disponível para substituição
-                fprintf(stderr, "Nenhum frame disponível para substituição.\n");
-                return;
-            }
-        }
 
-        // Atualizar a nova página
-        proc->pages[proc->npages].block = pager.nblocks - pager.free_blocks;
-        proc->pages[proc->npages].on_disk = 1;
-        proc->pages[proc->npages].frame = frame;
-        proc->npages++;
+    int frame = findFreeFrame();
+    printf("frame: %d\n", proc->pages[page_index].frame);
+
+    if (frame == -1)
+    {
         
-        mmu_zero_fill(frame);
-        mmu_resident(pid, addr, frame, PROT_READ);
-    } else {
-        // Página encontrada, atualizar se necessário
-        if (proc->pages[page_index].frame != -1) {
-            mmu_chprot(pid, addr, PROT_READ | PROT_WRITE);
-            pager.frames[proc->pages[page_index].frame].secondChance = 0;
-        }
+        frame = findAndReplace();
+        printf("frame: %d\n", proc->pages[page_index].frame);
+    }
+
+    
+
+    // Página não encontrada, alocar uma nova
+
+    // Atualizar a nova página
+    proc->pages[proc->npages].block = pager.nblocks - pager.free_blocks;
+    proc->pages[proc->npages].on_disk = 1;
+    proc->pages[proc->npages].frame = frame;
+    proc->npages++;
+
+    mmu_zero_fill(frame);
+    mmu_resident(pid, addr, frame, PROT_READ);
+
+    // printf("frame: %d\n", proc->pages[page_index].frame);
+
+    if (proc->pages[page_index].frame != 0)
+    {
+        mmu_chprot(pid, addr, PROT_READ | PROT_WRITE);
+
+        pager.frames[proc->pages[page_index].frame].secondChance = 0;
     }
 }
-
 
 int pager_syslog(pid_t pid, void *addr, size_t len)
 {
     struct proc *proc = NULL;
-    for (int i = 0; i < pager.nprocs; i++) {
-        if (pager.procs[i].pid == pid) {
+    for (int i = 0; i < pager.nprocs; i++)
+    {
+        if (pager.procs[i].pid == pid)
+        {
             proc = &pager.procs[i];
             break;
         }
@@ -222,9 +249,12 @@ int pager_syslog(pid_t pid, void *addr, size_t len)
 
     int *buf = addr;
 
-    for (int y = 0; y < pager.nprocs; y++) {
-        if(((proc->pages[y].bl_addr <= *buf) && *buf <= (proc->pages[y].bl_addr + 0xFFF)) && ((proc->pages[y].bl_addr <= (*buf + len)) && (*buf + len) <= proc->pages[y].bl_addr + 0xFFF)){
-            for(int i = 0; i < len; i++) {        // len é o número de bytes a imprimir
+    for (int y = 0; y < pager.nprocs; y++)
+    {
+        if (((proc->pages[y].bl_addr <= *buf) && *buf <= (proc->pages[y].bl_addr + 0xFFF)) && ((proc->pages[y].bl_addr <= (*buf + len)) && (*buf + len) <= proc->pages[y].bl_addr + 0xFFF))
+        {
+            for (int i = 0; i < len; i++)
+            {                                     // len é o número de bytes a imprimir
                 printf("%02x", (unsigned)buf[i]); // buf contém os dados a serem impressos
             }
 
@@ -237,8 +267,10 @@ int pager_syslog(pid_t pid, void *addr, size_t len)
 
 void pager_destroy(pid_t pid)
 {
-    for(int i = 0; i < pager.nprocs; i++){
-        if (pager.procs[i].pid == pid) {
+    for (int i = 0; i < pager.nprocs; i++)
+    {
+        if (pager.procs[i].pid == pid)
+        {
             free(pager.procs[i].pages);
             break;
         }
