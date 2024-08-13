@@ -139,7 +139,7 @@ int findAndUpdate(){
     return -1; 
 }
 
-int findAndReplase(){
+int findAndReplace(){
     for(int i = 0; i < pager.nframes; i++) 
     { 
          
@@ -156,45 +156,59 @@ int findAndReplase(){
 void pager_fault(pid_t pid, void *addr)
 {
     struct proc *proc = NULL;
+    
+    // Encontrar o processo associado ao pid
     for (int i = 0; i < pager.nprocs; i++) {
         if (pager.procs[i].pid == pid) {
             proc = &pager.procs[i];
             break;
         }
     }
-
-    int page;
-
-
-    for (int y = 0; y < pager.nprocs; y++) {
-        if(proc->pages[y].bl_addr == addr){
-
-            page = y;
-
+    
+    if (!proc) {
+        // Processo não encontrado
+        fprintf(stderr, "Processo %d não encontrado.\n", pid);
+        return;
+    }
+    
+    // Encontrar a página associada ao endereço
+    int page_index = -1;
+    for (int i = 0; i < proc->npages; i++) {
+        if ((uintptr_t)proc->pages[i].block == (uintptr_t)addr) {
+            page_index = i;
             break;
-        }else if(y == pager.nprocs){
-            int frame = findAndUpdate();
-
-            if(frame == -1){
-                frame = findAndReplase();
-            }
-
-            proc->pages[y + 1].frame = frame;
-            //proc->pages[y + 1].bl_addr = addr;
-            
-            mmu_zero_fill(frame);
-            mmu_resident(pid, addr, frame, PROT_READ);
         }
     }
+    
+    if (page_index == -1) {
+        // Página não encontrada, alocar uma nova
+        int frame = findAndUpdate();
+        if (frame == -1) {
+            frame = findAndReplace();
+            if (frame == -1) {
+                // Nenhum frame disponível para substituição
+                fprintf(stderr, "Nenhum frame disponível para substituição.\n");
+                return;
+            }
+        }
 
-    if(proc->pages[page].frame != 0){
-        mmu_chprot(pid, addr, PROT_READ | PROT_WRITE);
-
-        pager.frames[proc->pages[page].frame].secondChance = 0;
+        // Atualizar a nova página
+        proc->pages[proc->npages].block = pager.nblocks - pager.free_blocks;
+        proc->pages[proc->npages].on_disk = 1;
+        proc->pages[proc->npages].frame = frame;
+        proc->npages++;
+        
+        mmu_zero_fill(frame);
+        mmu_resident(pid, addr, frame, PROT_READ);
+    } else {
+        // Página encontrada, atualizar se necessário
+        if (proc->pages[page_index].frame != -1) {
+            mmu_chprot(pid, addr, PROT_READ | PROT_WRITE);
+            pager.frames[proc->pages[page_index].frame].secondChance = 0;
+        }
     }
-
-
 }
+
 
 int pager_syslog(pid_t pid, void *addr, size_t len)
 {
