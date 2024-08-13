@@ -62,6 +62,7 @@ void pager_init(int nframes, int nblocks)
         pager.frames[i].page = -1;
         pager.frames[i].prot = 0;
         pager.frames[i].dirty = 0;
+        pager.frames[i].secondChance = 0;
     }
 
     pager.procs = NULL;
@@ -131,7 +132,7 @@ int findAndUpdate(){
         {
             pager.frames[i].dirty = 1;
             pager.frames[i].secondChance = 1;
-             
+            fprintf(stderr, "Frame limpo.\n");
             return i; 
         } 
     } 
